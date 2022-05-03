@@ -1,0 +1,85 @@
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage[english]{babel}
+\usepackage{hyphenat}
+\usepackage{indentfirst}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{listings, lstautogobble}
+\usepackage{color}
+\usepackage{graphicx}
+
+
+% Hyphenation
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+
+% Layout
+\geometry{a4paper, left=25mm, right=25mm, top=30mm, bottom=20mm}
+
+% Cover page
+\title{\Large{\textbf{Microprocessors Lab1}}}
+\author{Kyriafinis Vasilis 9797, Koro Erika 9707}
+\date{April 9, 2022}
+
+
+\begin{document}
+    \maketitle
+    
+    \section*{Introduction}
+    The objective of this assignment is to calculate the hash of a given string.
+    The hash function is a given hash table, that matches capital letters to integers, implemented in ARM
+    assembly and called by a main C routine. 
+
+    \section*{Code description}
+    In the main C routine a string is given in order to calculate its hash. 
+    In the ARM assembly, hash function has three arguments: 
+
+    \begin{enumerate}
+        \item r0: Contains the hash table's memory address.
+        \item r1: Contains the given string's memory address.
+        \item r2: Contains result's memory address.
+    \end{enumerate}
+
+    In the beginning, the first string character is loaded from the memory and then is compared to the value
+    90(The 'Z' in ASCII). If the character is bigger, it means that it is not a number nor a capital
+    letter, so branch to not\_number tag, else compare it to the value 65(the 'A' in ASCII). If it is less than
+    65, it means that it is not a capital letter and branches to not\_capital tag. If none of the comparisons is
+    true, it means that the character is a capital letter.
+    
+    In order to know which number should be selected from 
+    the hash table, the subtraction between the character and the 'A' character is used as an offset for the
+    table. The hash table contains integers that are 32 bits, so the offset is multiplied with 4(shift left 2).
+    Afterwards, the hash value is added to the register that holds temporarily the calculated hash value and finally
+    the pointer, that holds the string, is increased to point to the next character of the string 
+    to be examined as well. 
+
+    When branching to the not\_capital tag the character is compared to 48(0 in ASCII) and then to 57(9 in ASCII).
+    If the character is between those numbers it means that it is a number and its value is subtracted from the hashed
+    value as needed. To get the value, from the character is subtracted the value 48 to convert it to an integer.
+    Eventually, the string pointer increases to point to the next character and the program branches to loop tag.
+    Otherwise, when the above if statement is false the program branches to the not\_number tag.
+
+    When branching to the not\_number tag, it is checked whether the character is null, in order to exit and store 
+    the calculated hash value else it continues to the next loop.
+    
+    \section*{Problems Encountered}
+
+    In an effort to limit the usage of brach commands we tried to use conditional instructions. The program required
+    to execute more than one conditional instructions in a row and an it block was needed. Due to the errors that 
+    arose at run time (read permissions) the idea was abandoned.
+
+    \section*{Testing and Debugging}
+
+    For testing purposes a C function was created in order to confirm the hash results. The initial string was hardcoded
+    to the code. Many different strings where tested. Also the printf function was called from the assembly function to 
+    confirm the results along with the C function. 
+    
+    Regarding the debugging of the assembly code the Keil debugger was used. Especially useful was the memory and register viewer because it allowed 
+    to check the validity if every instruction executed. 
+
+    The memory view windows allows to check the content of the memory on a specific memory address in decimal, 
+    hexadecimal and other formats. Finally the register panel displays the value of every register in hexadecimal
+    format.
+
+    \end{document}
